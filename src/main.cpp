@@ -1,18 +1,28 @@
-#include <Arduino.h>
+#include "header.h"
 
-// put function declarations here:
-int myFunction(int, int);
+#define ROTARY_CLK_PIN 6 // D6
+#define ROTARY_DT_PIN 7  // D7
+#define ROTARY_SW_PIN 5
 
-void setup() {
-  // put your setup code here, to run once:
-  int result = myFunction(2, 3);
+#define RADIO_WIRE_PIN 5  // Pin to be wired to headunit
+
+
+void setup()
+{
+    Serial.begin(9600);
 }
 
-void loop() {
-  // put your main code here, to run repeatedly:
-}
+RotaryKnob rotary_knob = RotaryKnob(ROTARY_CLK_PIN, ROTARY_DT_PIN, ROTARY_SW_PIN);
+StereoCommand stereo_control = StereoCommand();
+int rotation = 0;
 
-// put function definitions here:
-int myFunction(int x, int y) {
-  return x + y;
+void loop()
+{
+    rotation = rotary_knob.checkRotation();
+    if (rotation == -1){
+        stereo_control.VolumeDown();
+    }
+    else if (rotation == 1) {
+        stereo_control.VolumeUp();
+    };
 }
