@@ -1,4 +1,5 @@
 #pragma once
+#include <Arduino.h>
 
 enum CommandCodes {
 	CMD_NONE = 0xFF,
@@ -13,20 +14,27 @@ enum CommandCodes {
 	CMD_MUTE = 0x16
 };
 
-// From https://init6.pomorze.pl/projects/kenwood_ford/:
-//  NEC protocol transmission data info:
+class KenwoodControl{
+	public:
+		KenwoodControl() : radio_pin(radio_pin) {};
+		void volume_up();
+		void volume_down();
+		void play_pause();
+		void next_track();
+		void previous_track();
 
-//     Time of a logical bit is 562.5µs
-//     Logical 1 is 562.5µs burst and 1.6875ms space
-//     Logical 0 is 562.5µs burst and 562.5µs space
-//     Transmitting a message frame takes 67.5ms
-//     Addresses and commands are sent LSB first
-
-
-#define NEC_ADDRESS 0xB9 // Kenwood
-#define NEC_UNIT 562.5
-#define NUM_BUTTONS 7 // OPEN included
-#define IN_RANGE_OHM(O, L, T) ((O) >= (((long)(L) * 1023) / ((L) + DIV_RESISTANCE)) && (O) <= (((long)(T) * 1023) / ((T) + DIV_RESISTANCE)))
-#define RADIO_PIN_REG portModeRegister(digitalPinToPort(RADIO_PIN))
-#define RADIO_PIN_PORT portOutputRegister(digitalPinToPort(RADIO_PIN))
-#define RADIO_PIN_BIT digitalPinToBitMask(RADIO_PIN)
+	private:
+		const float NEC_UNIT = 562.5;
+		CommandCodes* command_codes;
+		byte address = 0xB9;
+		void set_pin(uint8_t set_high);
+		void send_byte(byte data);
+		void nec_1();
+		void nec_0();
+		void transmission_start();
+		void send_comand(CommandCodes command);
+		volatile uint8_t* radio_pin_register;
+		volatile uint8_t* radio_pin_port;
+		int radio_pin;
+		uint8_t radio_pin_bit;
+};
