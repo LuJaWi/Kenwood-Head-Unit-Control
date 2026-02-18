@@ -4,6 +4,7 @@
 RotaryKnob::RotaryKnob(int clk_pin, int dt_pin, int sw_pin) : clk_pin(clk_pin), dt_pin(dt_pin), sw_pin(sw_pin), last_change_time(0) {
     pinMode(clk_pin, INPUT);
     pinMode(dt_pin, INPUT);
+    pinMode(sw_pin, INPUT_PULLUP);
     clk_last_state = digitalRead(clk_pin);
 } 
 
@@ -45,3 +46,13 @@ int RotaryKnob::checkRotation(){
     }
     return rotation;
 }
+
+bool RotaryKnob::checkPress()
+{
+    unsigned long current_time = millis();
+    if (current_time - last_change_time > debounce_delay)
+    {
+        return digitalRead(sw_pin) == LOW;
+    }
+}
+

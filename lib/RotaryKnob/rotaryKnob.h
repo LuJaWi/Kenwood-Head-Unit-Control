@@ -4,6 +4,7 @@ class RotaryKnob {
     public:
         RotaryKnob(int clk_pin, int dt_pin, int sw_pin);
         int checkRotation();
+        bool checkPress();
 
     private:
         int clk_pin;
