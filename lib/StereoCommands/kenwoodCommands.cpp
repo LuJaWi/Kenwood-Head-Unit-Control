@@ -2,7 +2,7 @@
 #include <util/delay.h>
 #include <Arduino.h>
 
-KenwoodControl::KenwoodControl()
+KenwoodControl::KenwoodControl(int radio_pin)
 {
     radio_pin_register = portModeRegister(digitalPinToPort(radio_pin));
     radio_pin_port = portOutputRegister(digitalPinToPort(radio_pin));

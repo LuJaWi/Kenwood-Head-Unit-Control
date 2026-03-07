@@ -16,7 +16,7 @@ enum CommandCodes {
 
 class KenwoodControl{
 	public:
-		KenwoodControl() : radio_pin(radio_pin) {};
+		KenwoodControl(int radio_pin);
 		void volume_up();
 		void volume_down();
 		void play_pause();
