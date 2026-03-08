@@ -4,7 +4,7 @@
 #define ROTARY_CLK_PIN 6  // D6
 #define ROTARY_DT_PIN 7   // D7
 
-#define RADIO_WIRE_PIN 4  // Pin to be wired to headunit
+#define RADIO_WIRE_PIN 2  // Pin to be wired to headunit
 
 
 void setup()
