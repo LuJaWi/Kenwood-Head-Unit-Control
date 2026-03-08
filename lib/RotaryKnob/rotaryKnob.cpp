@@ -1,7 +1,7 @@
 #include "rotaryKnob.h"
 #include <Arduino.h>
 
-RotaryKnob::RotaryKnob(int clk_pin, int dt_pin, int sw_pin) : clk_pin(clk_pin), dt_pin(dt_pin), sw_pin(sw_pin), last_check_time(0)
+RotaryKnob::RotaryKnob(int clk_pin, int dt_pin, int sw_pin) : clk_pin(clk_pin), dt_pin(dt_pin), sw_pin(sw_pin), last_knob_check_time(0)
 {
     pinMode(clk_pin, INPUT);
     pinMode(dt_pin, INPUT);
@@ -21,7 +21,7 @@ int RotaryKnob::checkRotation()
     // before saying it has rotated.
     if (dt_current_state > clk_current_state)
     {
-        if (idle_state && !(current_time - last_check_time < debounce_delay))
+        if (idle_state && !(current_time - last_knob_check_time < knob_debounce_delay))
         {
             rotation = 1;
             last_rotation = rotation;
@@ -30,7 +30,7 @@ int RotaryKnob::checkRotation()
     }
     else if (dt_current_state < clk_current_state)
     {
-        if (idle_state && !(current_time - last_check_time < debounce_delay))
+        if (idle_state && !(current_time - last_knob_check_time < knob_debounce_delay))
         {
             rotation = -1;
             last_rotation = rotation;
@@ -41,7 +41,7 @@ int RotaryKnob::checkRotation()
     { 
         rotation = 0;
         idle_state = false;
-        last_check_time = millis();
+        last_knob_check_time = millis();
     }
     else
     {
@@ -59,8 +59,24 @@ int RotaryKnob::checkRotation()
 bool RotaryKnob::checkPress()
 {
     unsigned long current_time = millis();
-    if (current_time - last_check_time > debounce_delay)
+    if (current_time - last_sw_check_time < button_debounce_delay)
     {
-        return digitalRead(sw_pin) == LOW;
+        return false;
     }
+
+    last_sw_check_time = current_time;
+
+    if (digitalRead(sw_pin) == LOW)
+    {
+        if (!button_pressed_state)
+        {
+            button_pressed_state = true;
+            return true;
+        }
+
+        return false;
+    }
+
+    button_pressed_state = false;
+    return false;
 }

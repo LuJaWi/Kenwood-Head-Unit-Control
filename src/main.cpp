@@ -25,4 +25,9 @@ void loop()
     else if (rotation == 1) {
         stereo_control.VolumeUp();
     };
+    if (rotary_knob.checkPress())
+    {
+        stereo_control.PlayPause();
+    }
+    
 }
