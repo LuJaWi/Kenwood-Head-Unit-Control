@@ -20,5 +20,17 @@ void StereoCommand::VolumeDown()
 void StereoCommand::PlayPause()
 {
     Serial.println("Play/Pause");
-    stereo_control.volume_down();
+    stereo_control.play_pause();
+}
+
+void StereoCommand::NextTrack()
+{
+    Serial.println("Next Track");
+    stereo_control.next_track();
+}
+
+void StereoCommand::PreviousTrack()
+{
+    Serial.println("Previous Track");
+    stereo_control.previous_track();
 }

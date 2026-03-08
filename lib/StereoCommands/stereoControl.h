@@ -8,6 +8,8 @@ class StereoCommand{
         void VolumeUp();
         void VolumeDown();
         void PlayPause();
+        void NextTrack();
+        void PreviousTrack();
     
     private:
         int radio_pin;

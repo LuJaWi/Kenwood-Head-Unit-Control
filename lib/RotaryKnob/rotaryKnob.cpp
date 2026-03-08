@@ -80,3 +80,27 @@ bool RotaryKnob::checkPress()
     button_pressed_state = false;
     return false;
 }
+
+int RotaryKnob::checkPressCount()
+{
+    if (checkPress())
+    {
+        press_count++;
+        last_multi_press_time = millis();
+    }
+
+    if (press_count > 0 && (millis() - last_multi_press_time) > multi_press_window_ms)
+    {
+        int detected_press_count = press_count;
+        press_count = 0;
+
+        if (detected_press_count >= 3)
+        {
+            return 3;
+        }
+
+        return detected_press_count;
+    }
+
+    return 0;
+}
