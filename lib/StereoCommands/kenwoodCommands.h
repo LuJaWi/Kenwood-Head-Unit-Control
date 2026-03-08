@@ -24,7 +24,7 @@ class KenwoodControl{
 		void previous_track();
 
 	private:
-		const float NEC_UNIT = 562.5;
+		static constexpr float NEC_UNIT = 562.5f;
 		CommandCodes* command_codes;
 		byte address = 0xB9;
 		void set_pin(uint8_t set_high);
@@ -32,7 +32,7 @@ class KenwoodControl{
 		void nec_1();
 		void nec_0();
 		void transmission_start();
-		void send_comand(CommandCodes command);
+		void send_command(CommandCodes command);
 		volatile uint8_t* radio_pin_register;
 		volatile uint8_t* radio_pin_port;
 		int radio_pin;

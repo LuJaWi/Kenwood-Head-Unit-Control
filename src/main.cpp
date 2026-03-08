@@ -4,7 +4,7 @@
 #define ROTARY_DT_PIN 7  // D7
 #define ROTARY_SW_PIN 5
 
-#define RADIO_WIRE_PIN 5  // Pin to be wired to headunit
+#define RADIO_WIRE_PIN 4  // Pin to be wired to headunit
 
 
 void setup()
@@ -13,7 +13,7 @@ void setup()
 }
 
 RotaryKnob rotary_knob = RotaryKnob(ROTARY_CLK_PIN, ROTARY_DT_PIN, ROTARY_SW_PIN);
-StereoCommand stereo_control = StereoCommand();
+StereoCommand stereo_control = StereoCommand(RADIO_WIRE_PIN);
 int rotation = 0;
 
 void loop()

@@ -26,7 +26,6 @@ int RotaryKnob::checkRotation()
             rotation = 1;
             last_rotation = rotation;
             idle_state = false;
-            Serial.print("Counter: "); Serial.println(turn_counter);
         }
     }
     else if (dt_current_state < clk_current_state)
@@ -36,7 +35,6 @@ int RotaryKnob::checkRotation()
             rotation = -1;
             last_rotation = rotation;
             idle_state = false;
-            Serial.print("Counter: "); Serial.println(turn_counter);
         }
     }
     else if (clk_current_state == 0) // When both knobs read zero, it's between detents

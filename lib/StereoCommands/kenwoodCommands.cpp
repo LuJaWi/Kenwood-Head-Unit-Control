@@ -2,35 +2,37 @@
 #include <util/delay.h>
 #include <Arduino.h>
 
-KenwoodControl::KenwoodControl(int radio_pin)
+KenwoodControl::KenwoodControl(int radio_pin) : radio_pin(radio_pin)
 {
+    radio_pin_bit = digitalPinToBitMask(radio_pin);
     radio_pin_register = portModeRegister(digitalPinToPort(radio_pin));
     radio_pin_port = portOutputRegister(digitalPinToPort(radio_pin));
+    set_pin(LOW);
 }
 
 void KenwoodControl::volume_up()
 {
-    send_comand(CMD_VOLUME_UP);
+    send_command(CMD_VOLUME_UP);
 }
 
 void KenwoodControl::volume_down()
 {
-    send_comand(CMD_VOLUME_DOWN);
+    send_command(CMD_VOLUME_DOWN);
 }
 
 void KenwoodControl::play_pause()
 {
-    send_comand(CMD_PLAY_PAUSE);
+    send_command(CMD_PLAY_PAUSE);
 }
 
 void KenwoodControl::next_track()
 {
-    send_comand(CMD_TRACK_NEXT);
+    send_command(CMD_TRACK_NEXT);
 }
 
 void KenwoodControl::previous_track()
 {
-    send_comand(CMD_TRACK_BACK);
+    send_command(CMD_TRACK_BACK);
 }
 
 // Lines below are logic for building the commands
@@ -80,7 +82,7 @@ void KenwoodControl::transmission_start()
     send_byte(~address);
 }
 
-void KenwoodControl::send_comand(CommandCodes command)
+void KenwoodControl::send_command(CommandCodes command)
 {
     //
     transmission_start();
