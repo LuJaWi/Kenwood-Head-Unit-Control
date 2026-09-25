@@ -1,5 +1,4 @@
 #include "kenwoodCommands.h"
-#include <util/delay.h>
 #include <Arduino.h>
 
 KenwoodControl::KenwoodControl(int radio_pin) : radio_pin(radio_pin)
@@ -7,7 +6,7 @@ KenwoodControl::KenwoodControl(int radio_pin) : radio_pin(radio_pin)
     radio_pin_bit = digitalPinToBitMask(radio_pin);
     radio_pin_register = portModeRegister(digitalPinToPort(radio_pin));
     radio_pin_port = portOutputRegister(digitalPinToPort(radio_pin));
-    set_pin(LOW);
+    set_pin(HIGH); // Idle state: floating (head unit pulls line high)
 }
 
 void KenwoodControl::volume_up()
@@ -42,42 +41,41 @@ void KenwoodControl::previous_track()
 
 void KenwoodControl::nec_1()
 {
-    set_pin(HIGH);
-    _delay_us(NEC_UNIT);
     set_pin(LOW);
-    _delay_us(NEC_UNIT * 3);
+    delayMicroseconds(NEC_UNIT);
+    set_pin(HIGH);
+    delayMicroseconds(NEC_UNIT * 3);
 }
 
 void KenwoodControl::nec_0()
 {
-    set_pin(HIGH);
-    _delay_us(NEC_UNIT);
     set_pin(LOW);
-    _delay_us(NEC_UNIT);
+    delayMicroseconds(NEC_UNIT);
+    set_pin(HIGH);
+    delayMicroseconds(NEC_UNIT);
 }
 
 // Set the pin to a high or low state
 void KenwoodControl::set_pin(uint8_t set_high)
 {
-    if (set_high)
+    if (set_high) // Floating — the radio pulls the line to 3.3V, don't drive 5V into it
     {
-        *radio_pin_register &= ~radio_pin_bit;
-        *radio_pin_port &= ~radio_pin_bit;
+        pinMode(radio_pin, INPUT);
     }
-    else
+    else // Pull low (mark)
     {
-        *radio_pin_port &= ~radio_pin_bit;
-        *radio_pin_register |= radio_pin_bit;
+        pinMode(radio_pin, OUTPUT);
+        digitalWrite(radio_pin, LOW);
     }
 }
 
 void KenwoodControl::transmission_start()
 {
     // Transmission Start Signal
-    set_pin(HIGH);
-    _delay_us(NEC_UNIT * 16);
     set_pin(LOW);
-    _delay_us(NEC_UNIT * 8);
+    delayMicroseconds(NEC_UNIT * 16);
+    set_pin(HIGH);
+    delayMicroseconds(NEC_UNIT * 8);
     send_byte(address);
     send_byte(~address);
 }
@@ -90,8 +88,10 @@ void KenwoodControl::send_command(CommandCodes command)
     send_byte(command);
     // Send inverse of command
     send_byte(~command);
-    // End transmission with a single burst
-    nec_0();
+    // End transmission with a single burst, then return to idle
+    set_pin(LOW);
+    delayMicroseconds(NEC_UNIT);
+    set_pin(HIGH);
 }
 
 void KenwoodControl::send_byte(byte data)

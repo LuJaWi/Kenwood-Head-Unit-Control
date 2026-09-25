@@ -24,7 +24,7 @@ class KenwoodControl{
 		void previous_track();
 
 	private:
-		static constexpr float NEC_UNIT = 562.5f;
+		static constexpr unsigned int NEC_UNIT = 562;
 		CommandCodes* command_codes;
 		byte address = 0xB9;
 		void set_pin(uint8_t set_high);
